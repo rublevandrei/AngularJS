@@ -1,33 +1,35 @@
-angular.module('app', ['ngRoute', 'ngCookies'])
+var app = angular.module('app', ['ngRoute', 'ngCookies']);
 
-.run(function($rootScope, $cookies) {
-
-
-})
-
-.controller('home', ['AuthenticationService', function($scope, $cookies, AuthenticationService){
-
-    AuthenticationService.ClearCredentials();
-
-}])
-
-.controller('login', function($scope, $cookies, AuthenticationService){
+app.run(function($rootScope, $cookies) {
 
 
 
-    var users = [{'name':'test', 'pass':'123'}];
+});
+
+app.controller('home', function($scope, $cookies){
+
+    $scope.test = 'test';
+
+});
+
+app.controller('login', function($scope, $cookies){
+
+    var users = [{'name':'test@test.com', 'pass':'test'}];
 
     $cookies.put('users', users)
 
-})
+});
 
-.controller('register', function($scope, $cookies){
+app.controller('register', function($scope, $cookies){
+
+    var users = $cookies.get('users');
+
+    alert(users['pass']);
 
 
+});
 
-})
-
-.config(function($routeProvider){
+app.config(function($routeProvider){
     $routeProvider
         .when("/",
         {
