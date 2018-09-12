@@ -11,7 +11,7 @@
 
     app.run(function($rootScope, $localStorage, $sessionStorage, $location) {
 
-        $localStorage.users = [{}];
+        $sessionStorage.users = [];
 
     });
 
@@ -59,13 +59,15 @@
     }
 
     function RegisterController($scope, $localStorage, $sessionStorage, $location){
-
+	
         var users = $sessionStorage.users;
 
         $scope.onRegister = function () {
 
             var user = users.filter(function (user) { return user.email == $scope.email });
 
+			console.log(user);
+			
             if(user.length < 1){
 
                 users[users.length] = {'email': $scope.email, 'password': $scope.password};
