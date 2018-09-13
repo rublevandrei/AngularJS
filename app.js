@@ -11,7 +11,7 @@
 
     app.run(function($rootScope, $localStorage, $sessionStorage, $location) {
 
-        $sessionStorage.users = [];
+        if(!$localStorage.users) $localStorage.users = [];
 
     });
 
@@ -22,7 +22,7 @@
 
         $scope.onLogout = function () {
 
-            $sessionStorage.checkAuth = false;
+            $localStorage.checkAuth = false;
 
             $location.path( "/login" );
 
@@ -32,16 +32,18 @@
 
     function LoginController($scope, $localStorage, $sessionStorage, $location){
 
-        var users = $sessionStorage.users;
+        var users = $localStorage.users;
 
         $scope.onLogin = function () {
 
-            var user = users.filter(function (user) { return user.email == $scope.email });
+            var user = users.filter(function (users) { return users.email == $scope.email });
+
+            alert(users[0].password);
 
             if(user.length > 0 && user[0].password == $scope.password){
 
-                $sessionStorage.checkAuth = true;
-                $sessionStorage.userEmail = user[0].email;
+                $localStorage.checkAuth = true;
+                $localStorage.userEmail = user[0].email;
                 $location.path( "/" );
 
             }else $scope.error = 'Нет такого пользователя!';
@@ -52,30 +54,17 @@
 
     }
 
-    function deleteUser(user) {
-
-        alert(user);
-
-    }
-
     function RegisterController($scope, $localStorage, $sessionStorage, $location){
 	
-        var users = $sessionStorage.users;
+        var users = $localStorage.users;
 
         $scope.onRegister = function () {
 
-            var user = users.filter(function (user) { return user.email == $scope.email });
+            var user = users.filter(function (users) { return users.email == $scope.email });
 
-			console.log(user);
-			
-            if(user.length < 1){
+            if(user.length == 0){
 
                 users[users.length] = {'email': $scope.email, 'password': $scope.password};
-
-                $sessionStorage.users = users;
-
-                console.log(users);
-                console.log($sessionStorage.users);
 
                 $localStorage.checkAuth = true;
                 $localStorage.userEmail = $scope.email;
@@ -101,8 +90,8 @@
                 controller: "home",
                 controllerAs: "app",
                 resolve: {
-                    "check": function ($location, $sessionStorage) {
-                        if($sessionStorage.checkAuth !== true) $location.path( "/login" );
+                    "check": function ($location, $localStorage) {
+                        if($localStorage.checkAuth !== true) $location.path( "/login" );
                     }
                 }
             })
@@ -112,8 +101,8 @@
                 controller: "login",
                 controllerAs: "app",
                 resolve: {
-                    "check": function ($location, $sessionStorage) {
-                        if($sessionStorage.checkAuth == true) $location.path( "/" );
+                    "check": function ($location, $localStorage) {
+                        if($localStorage.checkAuth == true) $location.path( "/" );
                     }
                 }
             })
@@ -123,8 +112,8 @@
                 controller: "register",
                 controllerAs: "app",
                 resolve: {
-                    "check": function ($location, $sessionStorage) {
-                        if($sessionStorage.checkAuth == true) $location.path( "/" );
+                    "check": function ($location, $localStorage) {
+                        if($localStorage.checkAuth == true) $location.path( "/" );
                     }
                 }
             })
